@@ -5,6 +5,14 @@ import datetime
 
 
 def get_met_data(self, csv_file):
+    """
+    Gathers and returns list of lists of wind and wave information based on hourly or 10-minute data from NOAA's
+    National Data Buoy Center real-time or archived data. Returned list format is [wind speeds, wind directions,
+    significant wave heights, wave directions, peak wave periods].
+    Input parameter is any CSV or text file with the same formatting as the NDBC website.
+    Note this is the only function used when sampling from real-time or 10-minute data; all other functions rely on
+    archived data.
+    """
 
     wind_speed = []
     wind_dir = []
@@ -36,6 +44,11 @@ def get_met_data(self, csv_file):
 
 
 def get_wind_data(self, csv_file):
+    """
+    Gathers and returns list of lists of wind information based in hourly data from NOAA's National Data Buoy Center
+    archived data.  Returned list format is [wind speeds, wind directions].
+    Input parameter is any CSV or text file with the same formatting at the NDBC website.
+    """
 
     wind_speed = []
     wind_dir = []
@@ -58,6 +71,11 @@ def get_wind_data(self, csv_file):
 
 
 def get_current_data(self, csv_file):
+    """
+    Gathers and returns list of lists of current information based in hourly data from NOAA's National Data Buoy Center
+    archived data. Returned list format is [current depths, current speeds, current directions].
+    Input parameter is any CSV or text file with the same formatting at the NDBC website.
+    """
 
     current_speed = []
     current_dir = []
@@ -81,6 +99,11 @@ def get_current_data(self, csv_file):
 
 
 def get_datetimes(self, csv_file):
+    """
+    Generates and returns list of datetimes of format YYYY-MM-DD HH:MM from NOAA's National Data Buoy Center
+    archived data. Input parameter is any CSV or text file with the same formatting at the NDBC website.
+    TODO: add functionality with real-time data.
+    """
 
     datetimes = []
 
@@ -103,6 +126,8 @@ def get_datetimes(self, csv_file):
 
 
 class Wave:
+    """All gathered wave directions, significant wave heights, and dominant wave periods."""
+
     def __init__(self, met_data):
         self.directions = met_data[3]
         self.sig_wave_heights = met_data[2]
@@ -110,11 +135,22 @@ class Wave:
 
 
 class Wind:
+    """
+    Contains all gathered wind directions and speeds, and functions to partition gathered wind data into closely-related
+    speed/direction combinations. This can be used later to create a wide range of FAST input files to properly model
+    all needed wind conditions to accurately model a site.
+    """
+
     def __init__(self, wind_data):
         self.directions = wind_data[1]
         self.speeds = wind_data[0]
 
     def get_bin_speeds(self):
+        """
+        Splits the wind speed into five equally-spaced bins, and takes the average speed of each bin. Returns
+        a list of the average bin speeds, lowest average bin speed to highest.
+        """
+
         bin_speeds = []
         ax = windrose.WindroseAxes.from_ax()
         ax.bar(self.directions, self.speeds, normed=True, nsector=16)
@@ -125,6 +161,12 @@ class Wind:
         return bin_speeds
 
     def get_bin_probabilities(self):
+        """
+        Takes the wind speeds and directions and determines the occurrence of each speed/direction combination
+        of occurring in the sampled buoy data. Returns a pandas DataFrame with these probabilities of occurrence,
+        speed in rows, and direction in columns.
+        """
+
         ax = windrose.WindroseAxes.from_ax()
         ax.bar(self.directions, self.speeds, normed=True, nsector=16)
 
@@ -135,7 +177,7 @@ class Wind:
         bin_probabilities[-2] = bin_probabilities[-1] + bin_probabilities[-2]
         bin_probabilities = bin_probabilities[:-1]
 
-        bin_speeds = get_bin_speeds()
+        bin_speeds = Wind.get_bin_speeds()
         cardinal_dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
                          'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'] # TODO make dictionary with attached degree
 
@@ -145,6 +187,7 @@ class Wind:
 
 
 class Current:
+    """All gathered current measurement depths, speeds, and directions."""
     def __init__(self, current_data):
         self.depth = current_data[0]
         self.speeds = current_data[1]
