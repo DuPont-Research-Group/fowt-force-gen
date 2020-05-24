@@ -1,17 +1,23 @@
 import fast_io
 import os
+import shutil
 import numpy as np
 
-def get_filenames(file_directory, file_extension):
+
+def get_filenames(file_extension, *file_directory):
     """
      Generates a list of files contained within a specified
      file directory with a particular file extension.
 
      Arguments:
-         file_directory is a string specifying the path to the target directory
          file_extension is a string specifying the desired file extension to be returned
             in a list from the target directory. The period is included. For example '.txt'
+        file_directory is a string specifying the path to the target directory. If not specified, defaults to the
+        same directory as fowt-force-gen module.
     """
+
+    if file_directory is None:
+        file_directory = os.path.dirname(os.path.realpath(__file__))
 
     all_dir_files = os.listdir(file_directory)
     returned_files = []
@@ -20,6 +26,18 @@ def get_filenames(file_directory, file_extension):
             returned_files.append(files)
 
     return returned_files
+
+
+def move_files(files, destination_directory, *source_directory):
+    if source_directory is None:
+        source_directory = os.path.dirname(os.path.realpath(__file__))
+
+    if not os.path.isdir(destination_directory):
+        os.mkdir(destination_directory)
+
+    for file in files:
+        shutil.move(source_directory+file, destination_directory)
+
 
 def get_param_data(outb_file, param_names):
     """
@@ -41,7 +59,7 @@ def get_param_data(outb_file, param_names):
 
     for idx, param in enumerate(param_names):
         param_col = outb_params.index(param)
-        param_data[:,idx] = outb_data[:,param_col]
+        param_data[:, idx] = outb_data[:, param_col]
 
     return param_data
 

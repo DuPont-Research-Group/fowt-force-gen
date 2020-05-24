@@ -1,5 +1,8 @@
 import numpy as np
 
+
+
+
 def filegen(template_file, new_filename, **kwargs):
     """
     Generates a new text file format based on an existing FAST file. Useful for creating
