@@ -59,7 +59,7 @@ def get_param_data(outb_file, param_names):
 
     for idx, param in enumerate(param_names):
         param_col = outb_params.index(param)
-        param_data[:, idx] = outb_data[:, param_col]
+        param_data[:, idx+1] = outb_data[:, param_col]
 
     return param_data
 
