@@ -2,9 +2,10 @@ import csv
 import windrose
 import pandas as pd
 import datetime
+import numpy as np
+import math
 
-
-def get_met_data(self, csv_file):
+def get_met_data(csv_file):
     """
     Gathers and returns list of lists of wind and wave information based on hourly or 10-minute data from NOAA's
     National Data Buoy Center real-time or archived data. Returned list format is [wind speeds, wind directions,
@@ -28,11 +29,21 @@ def get_met_data(self, csv_file):
         for row in reader:
             while '' in row:
                 row.remove('')
-            current_wind_speed = row[6]
-            current_wind_dir = 360 - row[5] #FAST orients direction with opposite +y
-            current_wave_dir = 360 - row[11]
-            current_sig_wave_ht = row[8]
-            current_wave_period = row[9]
+            current_wind_speed = float(row[6])
+            current_wind_dir = 360 - int(row[5]) #FAST orients direction with opposite +y
+            current_wave_dir = 360 - int(row[11])
+            current_sig_wave_ht = float(row[8])
+            current_wave_period = float(row[9])
+            if math.isclose(current_wind_speed, 99.):
+                current_wind_speed = wind_speed[-1]
+            if math.isclose(int(row[5]), 999):
+                current_wind_dir = wind_dir[-1]
+            if math.isclose(int(row[11]), 999):
+                current_wave_dir = wave_dir[-1]
+            if math.isclose(current_sig_wave_ht, 99.):
+                current_sig_wave_ht = sig_wave_ht[-1]
+            if math.isclose(current_wave_period, 99.):
+                current_wave_period = wave_period[-1]
             wind_speed.append(float(current_wind_speed))
             wind_dir.append(int(current_wind_dir))
             wave_dir.append(int(current_wave_dir))
@@ -55,14 +66,18 @@ def get_wind_data(self, csv_file):
 
     with open(csv_file) as data_file:
         reader = csv.reader(data_file, delimiter=' ')
-        next(reader) #skips header line of CSV file
+        next(reader)  #skips header line of CSV file
         next(reader)
 
         for row in reader:
             while '' in row:
                 row.remove('')
-            current_wind_dir = 360 - row[5] #FAST orients direction with opposite +y
-            current_wind_speed = row[6]
+            current_wind_dir = 360 - int(row[5])  #FAST orients direction with opposite +y
+            current_wind_speed = float(row[6])
+            if math.isclose(current_wind_speed, 99.):
+                current_wind_speed = wind_speed[-1]
+            if math.isclose(int(row[5]), 999):
+                current_wind_dir = wind_dir[-1]
             wind_dir.append(int(current_wind_dir))
             wind_speed.append(float(current_wind_speed))
 
@@ -88,9 +103,13 @@ def get_current_data(self, csv_file):
         for row in reader:
             while '' in row:
                 row.remove('')
-            current_depth = row[5]
-            current_current_speed = row[7]
-            current_current_dir = row[6]
+            current_depth = float(row[5])
+            current_current_speed = float(row[7])
+            current_current_dir = 360 - int(row[6])
+            if math.isclose(current_current_speed, 99.):
+                current_current_speed = current_speed[-1]
+            if math.isclose(current_current_dir, 999):
+                current_current_dir = current_dir[-1]
             current_speed.append(float(current_current_speed))
             current_dir.append(int(current_current_dir))
 
@@ -120,7 +139,7 @@ def get_datetimes(self, csv_file):
             currentday = int(row[2])
             currenthour = int(row[3])
             currentmin = int(row[4])
-            datetimes.append(datetime(currentyear, currentmonth, currentday, currenthour, currentmin))
+            datetimes.append(datetime.datetime(currentyear, currentmonth, currentday, currenthour, currentmin))
 
     return datetimes
 
@@ -130,8 +149,29 @@ class Wave:
 
     def __init__(self, met_data):
         self.directions = met_data[3]
-        self.sig_wave_heights = met_data[2]
-        self.wave_periods = met_data[4]
+        self.sig = met_data[2]
+        self.periods = met_data[4]
+
+    def partition(self, num_divisions=12):
+        """goes through wave directions, sig. wave heights, and periods (JOINTLY!), to determine if there is large
+        enough deviation to warrant multiple wave climates throughout the year"""
+        measures_per_division = round(len(self.sig)/num_divisions)
+
+        # Partition data into equally spaced divisions and find medians of each partition
+        div_sig_med = np.zeros(num_divisions)
+        div_periods_med = np.zeros(num_divisions)
+        div_directions_med = np.zeros(num_divisions)
+
+        for divisions in np.arange(num_divisions):
+            start_idx = measures_per_division*divisions
+            div_sig = self.sig[start_idx:start_idx+measures_per_division]
+            div_periods = self.periods[start_idx:start_idx+measures_per_division]
+            div_directions = self.directions[start_idx:start_idx+measures_per_division]
+            div_sig_med[divisions] = np.median(div_sig)
+            div_periods_med[divisions] = np.median(div_periods)
+            div_directions_med[divisions] = np.median(div_directions)
+
+        return div_sig_med, div_directions_med, div_periods_med
 
 
 class Wind:
@@ -181,7 +221,7 @@ class Wind:
         cardinal_dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
                          'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'] # TODO make dictionary with attached degree
 
-        df = pd.DataFrame(bin_probabilities, columns = cardinal_dirs, index = bin_speeds)
+        df = pd.DataFrame(bin_probabilities, columns=cardinal_dirs, index=bin_speeds)
 
         return df
 
