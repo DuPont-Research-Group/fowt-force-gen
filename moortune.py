@@ -8,6 +8,23 @@ import os
 
 
 def tune(water_depth, platform, output_moordyn_filename):
+    """
+    Using metocean and platform information, generates MoorDyn .dat files with a properly tuned and positioned mooring
+    system so rigid body modes and frequencies match those specified in the NREL platform definition. Contains
+    subfunctions to:
+        1) Identify proper anchor coordinate (get_positions)
+        2) Approximate the necessary mooring line length needed in a catenary mooring system to prevent vertical force
+        acting on the anchor (tune_rough)
+        3) Fine tune the mooring line length so the free decay response of the platform matches that of the NREL
+        platform definition (tune_fine)
+
+    Parameters:
+        water_depth is an integer or float specifying the depth of the particular location of the floating platform
+        platform is a string specifying which platform definition to use. Currently, the two options for this are
+            'OC3', which selects the OC3-Hywind spar buoy platform, or 'OC4', which selects the OC4-DeepCwind
+            semisubmersible platform.
+        output_moordyn_filename is a string specifying the desired name of the generated MoorDyn DAT file.
+    """
     mooring = Mooring(water_depth, platform)
     initial_line_length = mooring.tune_rough()
     mooring.tune_fine(initial_line_length, output_moordyn_filename)

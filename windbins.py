@@ -3,7 +3,7 @@ import windrose
 import pandas as pd
 import datetime
 import numpy as np
-
+import math
 
 def get_met_data(csv_file):
     """
@@ -34,15 +34,15 @@ def get_met_data(csv_file):
             current_wave_dir = 360 - int(row[11])
             current_sig_wave_ht = float(row[8])
             current_wave_period = float(row[9])
-            if current_wind_speed == 99.0:
+            if math.isclose(current_wind_speed, 99.):
                 current_wind_speed = wind_speed[-1]
-            if int(row[5]) == 999:
+            if math.isclose(int(row[5]), 999):
                 current_wind_dir = wind_dir[-1]
-            if int(row[11]) == 999:
+            if math.isclose(int(row[11]), 999):
                 current_wave_dir = wave_dir[-1]
-            if current_sig_wave_ht == 99.0:
+            if math.isclose(current_sig_wave_ht, 99.):
                 current_sig_wave_ht = sig_wave_ht[-1]
-            if current_wave_period == 99.0:
+            if math.isclose(current_wave_period, 99.):
                 current_wave_period = wave_period[-1]
             wind_speed.append(float(current_wind_speed))
             wind_dir.append(int(current_wind_dir))
@@ -66,17 +66,17 @@ def get_wind_data(self, csv_file):
 
     with open(csv_file) as data_file:
         reader = csv.reader(data_file, delimiter=' ')
-        next(reader) #skips header line of CSV file
+        next(reader)  #skips header line of CSV file
         next(reader)
 
         for row in reader:
             while '' in row:
                 row.remove('')
-            current_wind_dir = 360 - int(row[5]) #FAST orients direction with opposite +y
+            current_wind_dir = 360 - int(row[5])  #FAST orients direction with opposite +y
             current_wind_speed = float(row[6])
-            if current_wind_speed == 99.0:
+            if math.isclose(current_wind_speed, 99.):
                 current_wind_speed = wind_speed[-1]
-            if int(row[5]) == 999:
+            if math.isclose(int(row[5]), 999):
                 current_wind_dir = wind_dir[-1]
             wind_dir.append(int(current_wind_dir))
             wind_speed.append(float(current_wind_speed))
@@ -106,9 +106,9 @@ def get_current_data(self, csv_file):
             current_depth = float(row[5])
             current_current_speed = float(row[7])
             current_current_dir = 360 - int(row[6])
-            if current_current_speed == 99.0:
+            if math.isclose(current_current_speed, 99.):
                 current_current_speed = current_speed[-1]
-            if current_current_dir == 999:
+            if math.isclose(current_current_dir, 999):
                 current_current_dir = current_dir[-1]
             current_speed.append(float(current_current_speed))
             current_dir.append(int(current_current_dir))
@@ -139,7 +139,7 @@ def get_datetimes(self, csv_file):
             currentday = int(row[2])
             currenthour = int(row[3])
             currentmin = int(row[4])
-            datetimes.append(datetime(currentyear, currentmonth, currentday, currenthour, currentmin))
+            datetimes.append(datetime.datetime(currentyear, currentmonth, currentday, currenthour, currentmin))
 
     return datetimes
 
@@ -221,7 +221,7 @@ class Wind:
         cardinal_dirs = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE',
                          'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'] # TODO make dictionary with attached degree
 
-        df = pd.DataFrame(bin_probabilities, columns = cardinal_dirs, index = bin_speeds)
+        df = pd.DataFrame(bin_probabilities, columns=cardinal_dirs, index=bin_speeds)
 
         return df
 

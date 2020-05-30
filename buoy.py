@@ -3,6 +3,12 @@ import requests
 
 
 def geo_match(latitude, longitude,search_radius='1000'):
+    """
+    Takes in a certain latitude and longitude coordinate and returns the nearest stationary NOAA buoy available on
+    the National Data Buoy Center website. Latitude and longitude should be strings with decimal degrees, though
+    directionality can be specified either in cardinal direction (e.g. '45.5N, 125W') or absolute decimal degrees
+    (e.g. '45.5, -125').
+    """
 
     # Go to the URL reflecting the necessary search results
     search_url = 'https://www.ndbc.noaa.gov/radial_search.php?lat1='+\
@@ -18,6 +24,11 @@ def geo_match(latitude, longitude,search_radius='1000'):
 
 
 def buoy_data_scraper(buoy_number):
+    """
+    With a specific stationary NOAA buoy, identifies the most recent year of archived meteorological, wind, and current
+    data and saves them as text files in the root directory. For example, if NOAA Station 45000 has meteorological data
+    from 2011, 2012, 2015, and 2018, this function will return 'met_data_45000_2018.txt.'
+    """
     buoy_history_url = 'https://www.ndbc.noaa.gov/station_history.php?station=' + buoy_number
     buoy_history_rss = requests.get(buoy_history_url)
     soup = BeautifulSoup(buoy_history_rss.content, 'lxml')
@@ -58,6 +69,7 @@ def buoy_data_scraper(buoy_number):
 
 
 def save_scraped_data(data_filename, scraped_data):
+    """Writes data generated in buoy_data_scraper to a text file"""
     with open(data_filename, 'w') as file:
         file.write(scraped_data)
 
