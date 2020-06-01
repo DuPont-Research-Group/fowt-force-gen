@@ -42,7 +42,8 @@ def make_distributions(param_data, calculate_stdev=True):
 def output_parse(output_file_root, num_line_segments=6):
     """
     Parses platform surge/sway and mooring/anchor tensions from OUTB and MD.out files.
-    output_file_root is the filename of the output files (and FST file used to generate those outputs)
+    Parameters:
+        output_file_root: the filename of the output files (and FST file used to generate those outputs)
     minus the extension. E.g. if "Test01.outb" and "Test01.MD.Line1.out" are two output files of interest,
     output_file_root = 'Test01'
     """
@@ -64,6 +65,26 @@ def output_parse(output_file_root, num_line_segments=6):
     line3_tension = get_moordyn_data(md_out_file3, moordyn_params)
 
     return ptfm_surge, ptfm_sway, anchor_tension, line1_tension, line2_tension, line3_tension
+
+
+def get_most_recent_file_containing(string, file_extension=None, file_directory=None):
+    """
+    Finds the most recently modified file in a directory containing a certain string. Note this operates most
+    efficiently if a file extension is also provided.
+    """
+    if file_directory is None:
+        file_directory = os.path.dirname(os.path.realpath(__file__))
+
+    if file_extension:
+        files_with_extension = get_filenames(file_extension, file_directory)
+        files_with_string = [filenames for filenames in files_with_extension if string in filenames]
+    else:
+        all_dir_files = os.listdir(file_directory)
+        files_with_string = [filenames for filenames in all_dir_files if string in filenames]
+
+    most_recent_file = max(files_with_string, key=os.path.getctime)
+
+    return most_recent_file
 
 
 def get_filenames(file_extension, file_directory=None):
@@ -98,7 +119,7 @@ def move_files(files, destination_directory, source_directory=None):
         os.mkdir(destination_directory)
 
     for file in files:
-        shutil.move(source_directory+file, destination_directory)
+        shutil.move(source_directory+'/'+file, destination_directory)
 
 
 def get_param_data(outb_file, param_names):
@@ -138,6 +159,8 @@ def get_moordyn_data(md_line_out_file, param_names):
         param_names is a list of strings of the desired parameter names to have data returned for from outb_file.
         These strings should exactly match the parameter names given in the MoorDyn output files.
     """
+    if 'MD.Line'+'.out' not in md_line_out_file:
+        raise Exception('md_line_out_file is not the correct file type. Specify a .MD.Line#.out file.')
 
     output_data = pd.read_csv(md_line_out_file, skiprows=[1], sep='\s+', dtype=float)
 

@@ -11,9 +11,6 @@ def run_fast(fst_files, *exe_path):
     for file_path in fst_files:
         subprocess.run(exe_path + ' ' + file_path)
 
-    outb_files = parse.get_filenames('.outb')
-    parse.move_files(outb_files, '/outb_files')
-
 
 def run_turbsim(inp_files, *exe_path):
     if exe_path is None:
