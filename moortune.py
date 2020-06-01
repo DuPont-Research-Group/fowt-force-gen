@@ -5,6 +5,7 @@ import parse
 import numpy.fft as fft
 import numpy as np
 import os
+import argparse
 
 
 def tune(water_depth, platform, output_moordyn_filename):
@@ -37,22 +38,22 @@ class Mooring:
         if platform is 'oc3' or 'OC3':
             self.line_massden = 77.7066
             self.line_diameter = 0.09
-            self.template_moordyn_file = 'moordyn_template_oc3.dat'
-            self.template_hydro_file = 'hydrodyn_template_oc3.dat'
-            self.template_rough_fst_file = 'template_rough_oc3.fst'
-            self.template_fine_fst_file = 'template_fine_oc3.fst'
-            self.base_outb_file = 'rbm_baseline_oc3.outb'
+            self.template_moordyn_file = 'template_files/OC3Hywind_MoorDyn_template.dat'
+            self.template_hydro_file = 'template_files/OC3Hywind_HydroDyn_template.dat'
+            self.template_rough_fst_file = 'template_files/OC3Hywind_tuning_rough.fst'
+            self.template_fine_fst_file = 'template_files/OC3Hywind_tuning_fine.fst'
+            self.base_outb_file = 'tuning_files/OC3Hywind_tuning_baseline.outb'
             self.line_angles = np.array([0., 120., 240.])
             self.fairlead_x = np.array([5.2, -2.6, -2.6])
             self.fairlead_y = np.array([0., 4.5, -4.5])
         elif platform is 'oc4' or 'OC4':
             self.line_massden = 113.35
             self.line_diameter = 0.0766
-            self.template_moordyn_file = 'moordyn_template_oc4.dat'
-            self.template_hydro_file = 'hydrodyn_template_oc4.dat'
-            self.template_rough_fst_file = 'template_rough_oc4.fst'
-            self.template_fine_fst_file = 'template_fine_oc4.fst'
-            self.baseline_outb_file = 'rbm_baseline_oc4.outb'
+            self.template_moordyn_file = 'template_files/.dat'
+            self.template_hydro_file = 'template_files/hydrodyn_template_oc4.dat'
+            self.template_rough_fst_file = 'template_files/template_rough_oc4.fst'
+            self.template_fine_fst_file = 'template_files/template_fine_oc4.fst'
+            self.baseline_outb_file = 'tuning_files/rbm_baseline_oc4.outb'
             self.line_angles= np.array([0., 120., 240.])
             self.fairlead_x = np.array([20.434, -40.868, 20.434])
             self.fairlead_y = np.array([35.393, 0., -35.393])
@@ -176,3 +177,18 @@ class Mooring:
         anchor_y = self.fairlead_y + hor_anchor_distance * math.sin(math.radians(self.line_angles))
 
         return anchor_x, anchor_y
+
+
+def main():
+    parser = argparse.ArgumentParser(description='Generates MoorDyn file with proper line length and anchor placement'
+                                                 'for the specified platform type and water depth')
+    parser.add_argument('water_depth', type=float, help='water depth at desired platform site')
+    parser.add_argument('platform', type=str, help='platform type; either OC3 or OC4 (i.e. Hywind or DeepCwind)')
+    parser.add_argument('filename', type=str, help='desired filename of output MoorDyn file')
+    args = parser.parse_args()
+
+    tune(args.water_depth, args.platform, args.filename)
+
+
+if __name__ == '__main__':
+    main()
