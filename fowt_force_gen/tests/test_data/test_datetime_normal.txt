@@ -1,0 +1,5 @@
+#YY  MM DD hh mm WDIR WSPD GDR GST GTIME
+#yr  mo dy hr mn degT m/s degT m/s hhmm
+2015 12 31 23 00  15  2.2 999 99.0 9999
+2015 12 31 23 10  22  2.1 999 99.0 9999
+2015 12 31 23 20  25  2.3 999 99.0 9999
