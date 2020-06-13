@@ -70,8 +70,8 @@ coming at each speed and direction
     and direction (clockwise starting from north), respectively, and the `#` symbol proceeding `Climate` indicates the
     wave climate specified. Wave climates can be specified based on user input after the monthly wave data is displayed:
     
-    ![Wave climate user prompt](../src/pre-fast_cmd_1.png)
-    ![Wave climate user entry](../src/pre-fast_cmd_2.png)
+    ![Wave climate user prompt](./src/pre-fast_cmd_1.png)
+    ![Wave climate user entry](./src/pre-fast_cmd_2.png)
 
 
 ### Examples without OpenFAST or TurbSim
