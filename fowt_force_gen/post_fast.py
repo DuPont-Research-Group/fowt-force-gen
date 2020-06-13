@@ -1,6 +1,6 @@
-import argparse
 from fowt_force_gen import parse
 from fowt_force_gen import filegen
+import argparse
 import os
 
 

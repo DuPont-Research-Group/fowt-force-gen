@@ -28,7 +28,7 @@ Line    LineType  UnstrLen  NumSegs   NodeAnch  NodeFair  Flags/Outputs
 3.0e6    kbot      - bottom stiffness (Pa/m)
 3.0e5    cbot      - bottom damping (Pa-s/m)
 1.2  dtIC  - time interval for analyzing convergence during IC gen (s)
-120      TmaxIC    - max time for ic gen (s)
+999      TmaxIC    - max time for ic gen (s)
 4.0      CdScaleIC - factor by which to scale drag coefficients during dynamic relaxation (-)
 0.001    threshIC  - threshold for IC convergence (-)
 ------------------------ OUTPUTS --------------------------------------------

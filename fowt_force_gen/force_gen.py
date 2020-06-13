@@ -1,11 +1,11 @@
-import argparse
-import os
 from fowt_force_gen import filegen
 from fowt_force_gen import buoy
 from fowt_force_gen import windbins
 from fowt_force_gen import run_fast
 from fowt_force_gen import moortune
 from fowt_force_gen import parse
+import argparse
+import os
 
 
 def main():

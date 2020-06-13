@@ -1,7 +1,7 @@
 from fowt_force_gen import run_fast
 from fowt_force_gen import filegen
-import math
 from fowt_force_gen import parse
+import math
 import numpy as np
 import os
 import argparse
@@ -146,12 +146,12 @@ class Mooring:
         # Proof load of mooring line (assumes chain)
         t_max = 0.0156 * self.line_diameter ** 2. * (44. - 0.08 * self.line_diameter)
 
-        # Vertical distance from fairlead to anchor
-        vert_line_distance = self.water_depth - self.fairlead_z
+        # Vertical distance from fairlead to anchor TODO integrate this with unit testing
+        # vert_line_distance = self.water_depth - self.fairlead_z
 
         # Horizontal distance between fairlead and anchor
-        hor_anchor_distance = ((t_max - self.line_massden*vert_line_distance)/self.line_massden) *\
-            math.acosh(1+vert_line_distance*(self.line_massden/(t_max-self.line_massden*vert_line_distance)))
+        hor_anchor_distance = ((t_max - self.line_massden*self.water_depth)/self.line_massden) *\
+            math.acosh(1+self.water_depth*(self.line_massden/(t_max-self.line_massden*self.water_depth)))
 
         anchor_x = np.zeros(len(self.line_angles))
         anchor_y = np.zeros(len(self.line_angles))
@@ -169,11 +169,11 @@ class Mooring:
         # Proof load of mooring line (assumes chain)
         t_max = 0.0156 * self.line_diameter ** 2. * (44. - 0.08 * self.line_diameter)
 
-        # Vertical distance from fairlead to anchor
-        vert_line_distance = self.water_depth - self.fairlead_z
+        # Vertical distance from fairlead to anchor TODO integrate this with unit testing
+        # vert_line_distance = self.water_depth - self.fairlead_z
 
         # Initial line length estimate used in Kim et al.
-        initial_line_length = vert_line_distance * math.sqrt(2. * (t_max / (self.line_massden * vert_line_distance)) - 1.)
+        initial_line_length = self.water_depth * math.sqrt(2. * (t_max / (self.line_massden * self.water_depth)) - 1.)
         initial_line_length = round(initial_line_length, 3)
 
         return initial_line_length
