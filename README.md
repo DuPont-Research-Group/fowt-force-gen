@@ -43,8 +43,8 @@ After installation, the full file paths to the OpenFAST and TurbSim executables 
 (this path can be found from command line using `pip show fowt_force_gen`).
 
 ## Running the Program
-** Note: if testing this package without OpenFAST/TurbSim installed, skip down to
-[Examples without OpenFAST or TurbSim](#examples-without-openfast-or-turbsim).
+**Note: if testing this package without OpenFAST/TurbSim installed, skip down to
+[Examples without OpenFAST or TurbSim](#examples-without-openfast-or-turbsim).**
 
 To run the entire program sequence (including OpenFAST and TurbSim), the following information needs to be provided:
 - Latitude/longitude in decimal degrees
