@@ -35,7 +35,7 @@ An internet connection is also required to access the [National Buoy Data Center
 #### Install via pip
 This package can be downloaded from PyPI and installed using:
 
-`$ pip install fowt_force_gen`
+`pip install fowt-force-gen==0.1.0`
 
 #### Setup
 After installation, the full file paths to the OpenFAST and TurbSim executables must be specified in the
@@ -58,7 +58,7 @@ is in development)
 For example, for a OC4-DeepCwind site located at 40&deg; 6' N, 125&deg;, at the command line at the package root
  directory, type
  
-`$ python -m fowt_force_gen.fowt_force_gen --latitude 40.1N --longitude 125W --platform OC4 --fileroot Site1`
+`python -m fowt_force_gen.fowt_force_gen --latitude 40.1N --longitude 125W --platform OC4 --fileroot Site1`
 
 The package will generate:
 - `Site1_bin_probabilities.csv` in the current directory, indicating the probability of wind
@@ -70,8 +70,8 @@ coming at each speed and direction
     and direction (clockwise starting from north), respectively, and the `#` symbol proceeding `Climate` indicates the
     wave climate specified. Wave climates can be specified based on user input after the monthly wave data is displayed:
     
-    ![Wave climate user prompt](./src/pre-fast_cmd_1.png)
-    ![Wave climate user entry](./src/pre-fast_cmd_2.png)
+    ![Wave climate user prompt](https://github.com/michaelcdevin/fowt-force-gen/tree/master/src/pre-fast_cmd_2.png)
+    ![Wave climate user entry](https://github.com/michaelcdevin/fowt-force-gen/tree/master/src/pre-fast_cmd_2.png)
 
 
 ### Examples without OpenFAST or TurbSim
@@ -87,7 +87,12 @@ This is effectively the entire procedure to setup for the main OpenFAST operatio
 To analyze an offshore site with the OC4-DeepCwind platform off the northern California coast (using NOAA Station 46014
 as the reference), type
 
-`$ python -m fowt_force_gen.pre_fast -lat 39N -lon 124W -pf OC4 -fr _ -ex 1`
+`python -m fowt_force_gen.pre_fast -lat 39N -lon 124W -pf OC4 -fr _ -ex 1`
+
+After a few moments, monthly wave data will be displayed on the console, with user input prompts to split the analysis
+into multiple wave climates based on the data. If "no" is selected at the prompt, a different wave climate will be made
+for each month (this will result in a LOT of created files and is not recommended unless intentional&mdash;answer "yes"
+and make 1 or 2 custom wave climates for now).
 
 The generated OpenFAST and TurbSim files will be created in the `force_gen` and `turbsim_files` directories,
 respectively. An `example1_bin_probabilities.csv` will be created in the root directory as well.
@@ -100,7 +105,7 @@ This command generates the MAT files from a set of OpenFAST output files, genera
  would ordinarily finish. A small set of the output files generated from running Example 1 in OpenFAST is included in
  this package as an example. At the command line, type
 
-`$ python -m fowt_force_gen.post_fast -dir example_files/post-fast`
+`python -m fowt_force_gen.post_fast -dir example_files/post-fast`
 
 The generated MAT files will be created in the `force_gen` directory.
 
@@ -131,7 +136,7 @@ a range of modeling conditions.
 
 For an existing OpenFAST input file located at `%root%/example_files/example4.dat`, type
 
-`python -m fowt_force_gen.filegen --input example_files/example4.dat --output example4_new.dat --param GenDoF False
+`python -m fowt_force_gen.filegen --input example_files/example4.dat --output example4_new.dat --param GenDOF False
 --numparam BlPitch 1 90 2 45 3 30`
 
 To generate a new file named `example4_new.dat` with GenDOF changed to False, BlPitch(1) changed to 90, BlPitch(2)
