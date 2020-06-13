@@ -1,12 +1,13 @@
 import csv
 import warnings
-with warnings.catch_warnings():
-    warnings.simplefilter('ignore')
-    import windrose
 import pandas as pd
 import datetime
 import numpy as np
 import math
+with warnings.catch_warnings():
+    warnings.simplefilter('ignore')
+    import windrose
+
 
 # TODO: fix read issue with old text files that don't have a units header
 def get_met_data(csv_file):

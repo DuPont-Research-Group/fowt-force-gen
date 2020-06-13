@@ -4,14 +4,14 @@ import os
 import time
 
 
-class DataParseTest:
-    def data_parse_test_1(self):
+class TestDataParse:
+    def test_data_parse_1(self):
         # make distributions of list data
         list_data = [5.5, 10.3, 15.67, 20.3, 25.1, 30.5, 35.8]
         stats = parse.make_distributions(list_data)
         compare_stats = np.array([20.453, 10.054])
         assert (stats == compare_stats).all()
-    def data_parse_test_2(self):
+    def test_data_parse_2(self):
         # make distributions of np.ndarray data
         array_data = np.array([[52560., 32550., 13520., 10030., 11160., 500.],
                                [52157., 32652., 13126., 10251., 11164., 500.],
@@ -25,9 +25,9 @@ class DataParseTest:
                                   [1.116425e+04, 2.681000e+00],
                                   [5.000000e+02, 0.000000e+00]])
         assert (stats == compare_stats).all()
-    def data_parse_test_3(self):
+    def test_data_parse_3(self):
         # output parse file with a normal number of line segments on the MoorDyn files
-        file_root = 'test_fast/compare_output'
+        file_root = 'tests/test_fast/compare_output'
         ptfm_surge, ptfm_sway, anchor_tension, line1_tension, line2_tension, line3_tension = parse.output_parse(
             file_root)
         compare_ptfm_surge = np.array([[5.], [4.99989557], [4.9995923]])
@@ -43,9 +43,9 @@ class DataParseTest:
         assert (np.around(ptfm_surge, 3) == np.around(compare_ptfm_surge, 3)).all()
         assert (line1_tension == compare_line1_tension).all()
 
-    def data_parse_test_4(self):
+    def test_data_parse_4(self):
         # output parse file with 1 line segment on the MoorDyn files
-        file_root = 'test_fast/compare_output_1seg'
+        file_root = 'tests/test_fast/compare_output_1seg'
         ptfm_surge, ptfm_sway, anchor_tension, line1_tension, line2_tension, line3_tension = parse.output_parse(
             file_root, 1)
         compare_ptfm_surge = np.array([[5.], [4.99992895], [4.99972391]])
@@ -54,8 +54,8 @@ class DataParseTest:
         assert (line1_tension == compare_line1_tension).all()
 
 
-class FileCatchingTest:
-    def file_catching_test_1(self):
+class TestFileCatching:
+    def test_file_catching_1(self):
         # Test get_most_recent_file_containing functionality
         with open('file_catching_test_1_true_orig.txt', 'w') as file1:
             pass
@@ -71,9 +71,9 @@ class FileCatchingTest:
         os.remove('file_catching_test_1_true_later.txt')
         assert found_file == compare_found_file
 
-    def file_catching_test_2(self):
+    def test_file_catching_2(self):
         # Test get_filenames functionality
-        test_dir = 'test_data'
+        test_dir = 'tests/test_data'
         txt_files = parse.get_filenames('.txt', file_directory=test_dir)
         compare_txt_files = ['test_currentdata_normal.txt', 'test_currentdata_overflow.txt',
                              'test_currentdata_string.txt', 'test_datetime_normal.txt', 'test_datetime_oldstyle.txt',
@@ -81,11 +81,11 @@ class FileCatchingTest:
                              'test_winddata_normal.txt', 'test_winddata_overflow.txt', 'test_winddata_realdata.txt']
         assert txt_files == compare_txt_files
 
-    def file_catching_test_3(self):
+    def test_file_catching_3(self):
         # Test move_files functionality
         file1_name = 'file_catching_test_3_a.txt'
         file2_name = 'file_catching_test_3_b.txt'
-        destination_dir = 'test_data'
+        destination_dir = 'tests/test_data'
         with open(file1_name, 'w') as file1:
             pass
         with open(file2_name, 'w') as file2:
@@ -97,9 +97,9 @@ class FileCatchingTest:
         os.remove(destination_dir + '/' + file1_name)
         os.remove(destination_dir + '/' + file2_name)
 
-    def file_catching_test_4(self):
+    def test_file_catching_4(self):
         # Test get_param_data with 1 parameter
-        outb_file = 'test_fast/test.outb'
+        outb_file = 'tests/test_fast/test.outb'
         param = 'TTDspFA'
         data = parse.get_param_data(outb_file, [param])
         compare_data = np.array(
@@ -110,9 +110,9 @@ class FileCatchingTest:
              [3.40536028e-01]])
         assert (np.round(data, 3) == np.round(compare_data, 3)).all()
 
-    def file_catching_test_5(self):
+    def test_file_catching_5(self):
         # Test get_param_data with multiple parameters
-        outb_file = 'test_fast/test.outb'
+        outb_file = 'tests/test_fast/test.outb'
         params = ['TTDspFA', 'TTDspSS']
         data = parse.get_param_data(outb_file, params)
         compare_data = np.array([[-4.43845238e-16, -0.00000000e+00], [9.62318562e-04, -5.23049630e-06],
@@ -128,9 +128,9 @@ class FileCatchingTest:
                                  [3.40536028e-01, -2.47239284e-02]])
         assert (np.round(data, 3) == np.round(compare_data, 3)).all()
 
-    def file_catching_test_6(self):
+    def test_file_catching_6(self):
         # Test get_moordyn_data with 1 parameter
-        md_file = 'test_fast/compare_output.MD.Line1.out'
+        md_file = 'tests/test_fast/compare_output.MD.Line1.out'
         param = ['Seg5Ten']
         data = parse.get_moordyn_data(md_file, param)
         compare_data = np.array([[863200.], [863100.], [863000.],
@@ -139,9 +139,9 @@ class FileCatchingTest:
         assert (data == compare_data).all()
 
 
-    def file_catching_test_7(self):
+    def test_file_catching_7(self):
         # Test get_moordyn_data with multiple parameters
-        md_file = 'test_fast/compare_output.MD.Line1.out'
+        md_file = 'tests/test_fast/compare_output.MD.Line1.out'
         params = ['Seg5Ten', 'Seg6Ten']
         data = parse.get_moordyn_data(md_file, params)
         compare_data = np.array([[863200., 936800.], [863100., 936700.], [863000., 936600.],

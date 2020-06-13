@@ -5,10 +5,10 @@ import datetime
 from unittest import mock
 
 
-class MetGenerationTest:
-    def met_generation_test_1(self):
+class TestMetGeneration:
+    def test_met_generation_1(self):
         # Interior test
-        file = 'test_data/test_metdata_normal.txt'
+        file = 'tests/test_data//test_metdata_normal.txt'
         met_data = windbins.get_met_data(file)
         compare_data = {'Wind Speed': [2.5, 2.2, 2.0, 3.8, 7.7, 6.4, 8.0, 5.0, 9.7],
                         'Wind Direction': [327.0, 343.0, 328.0, 326.0, 288.0, 281.0, 278.0, 280.0, 245.0],
@@ -18,9 +18,9 @@ class MetGenerationTest:
         compare_data = pd.DataFrame(data=compare_data)
         assert compare_data.equals(met_data)
 
-    def met_generation_test_2(self):
+    def test_met_generation_2(self):
         # Test with integer overflows in input file
-        file = 'test_data/test_metdata_overflow.txt'
+        file = 'tests/test_data//test_metdata_overflow.txt'
         met_data = windbins.get_met_data(file)
         compare_data = {
             'Wind Speed': [0.7, np.nan, np.nan, 1.3, 0.6, 1.3, 1.3, 0.6, 0.7, 1.5, np.nan, 2.1, 2.4, 3.0, 2.6],
@@ -36,19 +36,19 @@ class MetGenerationTest:
         assert compare_data.equals(met_data)
 
 
-class WindGenerationTest:
-    def wind_generation_test_1(self):
+class TestWindGeneration:
+    def test_wind_generation_1(self):
         # Interior test
-        file = 'test_data/test_winddata_normal.txt'
+        file = 'tests/test_data//test_winddata_normal.txt'
         wind_data = windbins.get_wind_data(file)
         compare_data = {'Wind Speed': [2.2, 2.1, 2.3, 2.1, 2.9, 2.6, 2.2, 2.0, 1.7, 2.0],
                         'Wind Direction': [345.0, 338.0, 335.0, 344.0, 332.0, 329.0, 324.0, 329.0, 340.0, 333.0]}
         compare_data = pd.DataFrame(data=compare_data)
         assert compare_data.equals(wind_data)
 
-    def wind_generation_test_2(self):
+    def test_wind_generation_2(self):
         # Test with integer overflows in input file
-        file = 'test_data/test_winddata_overflow.txt'
+        file = 'tests/test_data//test_winddata_overflow.txt'
         wind_data = windbins.get_wind_data(file)
         compare_data = {'Wind Speed': [np.nan, np.nan, np.nan, 4.1, np.nan, 3.4, 3.7],
                         'Wind Direction': [np.nan, np.nan, np.nan, np.nan, 74.0, 77.0, 75.0]}
@@ -56,10 +56,10 @@ class WindGenerationTest:
         assert compare_data.equals(wind_data)
 
 
-class CurrentGenerationTest:
-    def current_generation_test_1(self):
+class TestCurrentGeneration:
+    def test_current_generation_1(self):
         # Interior test
-        file = 'test_data/test_currentdata_normal.txt'
+        file = 'tests/test_data//test_currentdata_normal.txt'
         current_data, current_depth = windbins.get_current_data(file)
 
         compare_data = {'Current Speed': [31., 30., 33., 37., 42., 41., 32., 35., 18., 29.],
@@ -69,9 +69,9 @@ class CurrentGenerationTest:
         assert compare_data.equals(current_data)
         assert current_depth == compare_depth
 
-    def current_generation_test_2(self):
+    def test_current_generation_2(self):
         # Test with integer overflows in input file
-        file = 'test_data/test_currentdata_overflow.txt'
+        file = 'tests/test_data//test_currentdata_overflow.txt'
         current_data, current_depth = windbins.get_current_data(file)
         compare_data = {'Current Speed': [10.2, 11.6, 8.2, np.nan, np.nan, 3.5, 15., 19.2],
                         'Current Direction': [105., 90., 91., np.nan, 98., np.nan, 193., 185.]}
@@ -80,9 +80,9 @@ class CurrentGenerationTest:
         assert compare_data.equals(current_data)
         assert current_depth == compare_depth
 
-    def current_generation_test_3(self):
+    def test_current_generation_3(self):
         # Test with string overflows in input file
-        file = 'test_data/test_currentdata_string.txt'
+        file = 'tests/test_data//test_currentdata_string.txt'
         current_data, current_depth = windbins.get_current_data(file)
         compare_data = {'Current Speed': [34., 44., 45., np.nan, 100., 88., 52., np.nan],
                         'Current Direction': [213., 209., 204., 213., 208., 210., 210., 204.]}
@@ -92,28 +92,28 @@ class CurrentGenerationTest:
         assert current_depth == compare_depth
 
 
-class DatetimeGenerationTest:
-    def datetime_generation_test_1(self):
+class TestDatetimeGeneration:
+    def test_datetime_generation_1(self):
         # Test with typical modern datetime system
-        file = 'test_data/test_datetime_normal.txt'
+        file = 'tests/test_data//test_datetime_normal.txt'
         time_data = windbins.get_datetimes(file)
         compare_data = [datetime.datetime(2015, 12, 31, 23, 0), datetime.datetime(2015, 12, 31, 23, 10),
                         datetime.datetime(2015, 12, 31, 23, 20)]
         assert time_data == compare_data
         assert str(time_data[0]) == '2015-12-31 23:00:00'
 
-    def datetime_generation_test_2(self):
+    def test_datetime_generation_2(self):
         # Test with old style datetime system
-        file = 'test_data/test_datetime_oldstyle.txt'
+        file = 'tests/test_data//test_datetime_oldstyle.txt'
         time_data = windbins.get_datetimes(file)
         compare_data = [datetime.datetime(1998, 6, 30, 21, 20), datetime.datetime(1998, 6, 30, 21, 30),
                         datetime.datetime(1998, 6, 30, 21, 40)]
         assert time_data == compare_data
         assert str(time_data[0]) == '1998-06-30 21:20:00'
 
-    def datetime_generation_test_3(self):
+    def test_datetime_generation_3(self):
         # Test with nonlinear datetimes
-        file = 'test_data/test_datetime_skip.txt'
+        file = 'tests/test_data//test_datetime_skip.txt'
         time_data = windbins.get_datetimes(file)
         compare_data = [datetime.datetime(2015, 12, 31, 23, 50), datetime.datetime(2016, 1, 25, 20, 11),
                         datetime.datetime(2017, 3, 2, 1, 0)]
@@ -121,10 +121,10 @@ class DatetimeGenerationTest:
         assert str(time_data[0]) == '2015-12-31 23:50:00'
 
 
-class WaveClassTest:
-    def wave_class_test_1(self):
+class TestWaveClass:
+    def test_wave_class_1(self):
         # Test with normal partitioning
-        file = 'test_data/test_metdata_normal.txt'
+        file = 'tests/test_data//test_metdata_normal.txt'
         met_data = windbins.get_met_data(file)
         waves = windbins.Wave(met_data)
         met_partitions = waves.partition(num_divisions=3)
@@ -134,13 +134,13 @@ class WaveClassTest:
         compare_partitions = pd.DataFrame(data=compare_partitions)
         assert compare_partitions.equals(met_partitions)
 
-    def wave_class_test_2(self, monkeypatch):
+    def test_wave_class_2(self, monkeypatch):
         # Test with custom partitioning, 2 disparate wave climates
-        file = 'test_data/test_metdata_normal.txt'
+        file = 'tests/test_data//test_metdata_normal.txt'
         met_data = windbins.get_met_data(file)
         waves = windbins.Wave(met_data)
 
-        @mock.patch('windbins.input', create=True)
+        @mock.patch('fowt_force_gen.windbins.input', create=True)
         def dummy_inputs(mocked_inputs):
             mocked_inputs.side_effect = ['y', '2', '0 1 2 3 4', '5 6 7 8']
             met_partitions = waves.partition(custom_partitioning=True)
@@ -150,13 +150,13 @@ class WaveClassTest:
             assert compare_partitions.equals(met_partitions)
         dummy_inputs()
 
-    def wave_class_test_3(self):
+    def test_wave_class_3(self):
         # Test with custom partitioning, 2 overlapping wave climates
-        file = 'test_data/test_metdata_normal.txt'
+        file = 'tests/test_data//test_metdata_normal.txt'
         met_data = windbins.get_met_data(file)
         waves = windbins.Wave(met_data)
 
-        @mock.patch('windbins.input', create=True)
+        @mock.patch('fowt_force_gen.windbins.input', create=True)
         def dummy_inputs(mocked_inputs):
             mocked_inputs.side_effect = ['y', '2', '1 3 5 7 9', '1 2 3 5 7']
             met_partitions = waves.partition(custom_partitioning=True)
@@ -166,13 +166,13 @@ class WaveClassTest:
             assert compare_partitions.equals(met_partitions)
         dummy_inputs()
 
-    def wave_class_test_4(self):
+    def test_wave_class_4(self):
         # Test with custom partitioning, 1 wave climate consisting of only nans
-        file = 'test_data/test_metdata_normal.txt'
+        file = 'tests/test_data//test_metdata_normal.txt'
         met_data = windbins.get_met_data(file)
         waves = windbins.Wave(met_data)
 
-        @mock.patch('windbins.input', create=True)
+        @mock.patch('fowt_force_gen.windbins.input', create=True)
         def dummy_inputs(mocked_inputs):
             mocked_inputs.side_effect = ['y', '1', '9 10 11']
             met_partitions = waves.partition(custom_partitioning=True)
@@ -183,28 +183,28 @@ class WaveClassTest:
         dummy_inputs()
 
 
-class WindClassTest:
-    def wind_class_test_1(self):
+class TestWindClass:
+    def test_wind_class_1(self):
         # Interior test for Wind.get_bin_speeds
-        file = 'test_data/test_metdata_normal.txt'
+        file = 'tests/test_data//test_metdata_normal.txt'
         met_data = windbins.get_met_data(file)
         wind = windbins.Wind(met_data)
         bin_speeds = wind.get_bin_speeds()
         compare_bin_speeds = [2.77, 4.31, 5.85, 7.39, 8.93]
         assert compare_bin_speeds == bin_speeds
 
-    def wind_class_test_2(self):
+    def test_wind_class_2(self):
         # Edge case test (i.e. data with many nans) for Wind.get_bin_speeds
-        file = 'test_data/test_metdata_overflow.txt'
+        file = 'tests/test_data//test_metdata_overflow.txt'
         met_data = windbins.get_met_data(file)
         wind = windbins.Wind(met_data)
         bin_speeds = wind.get_bin_speeds()
         compare_bin_speeds = [0.84, 1.32, 1.8, 2.28, 2.76]
         assert compare_bin_speeds == bin_speeds
 
-    def wind_class_test_3(self):
+    def test_wind_class_3(self):
         # Interior test for Wind.get_bin_probabilities
-        file = 'test_data/test_winddata_realdata.txt'
+        file = 'tests/test_data//test_winddata_realdata.txt'
         wind_data = windbins.get_wind_data(file)
         wind = windbins.Wind(wind_data)
         bin_probabilities = wind.get_bin_probabilities()
@@ -228,9 +228,9 @@ class WindClassTest:
                                                  index=[2.25, 6.75, 11.25, 15.75, 20.25])
         assert compare_bin_probabilities.equals(bin_probabilities)
 
-    def wind_class_test_4(self):
+    def test_wind_class_4(self):
         # Edge case test (i.e. data with many nans) for Wind.get_bin_probabilities
-        file = 'test_data/test_winddata_overflow.txt'
+        file = 'tests/test_data//test_winddata_overflow.txt'
         wind_data = windbins.get_wind_data(file)
         wind = windbins.Wind(wind_data)
         bin_probabilities = wind.get_bin_probabilities()

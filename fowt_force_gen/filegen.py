@@ -1,7 +1,7 @@
+from fowt_force_gen import parse
 import warnings
 import numpy as np
 import argparse
-from fowt_force_gen import parse
 from scipy import io
 
 
@@ -272,7 +272,7 @@ def fst_bulk_filegen(template_file, new_filename_root, moordyn_file, ifw_file_di
             wind_dir_info = split_ifw_file[-1].split('.')[0]
             climate_num_info = split_hd_file[-1].split('.')[0]
 
-            new_fst_filename = new_filename_root + '_' + wind_speed_info + '_' + wind_dir_info + 'deg_' + \
+            new_fst_filename = new_filename_root + '_' + wind_speed_info + '_' + wind_dir_info + '_' + \
                 climate_num_info + '.fst'
             # TODO: add error catching if ifw_file_dir or hd_file_dir is working directory
             filegen(template_file, new_fst_filename, InflowFile='"'+ifw_file_dir+'/'+ifw_file+'"',

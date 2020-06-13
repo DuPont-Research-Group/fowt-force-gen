@@ -12,8 +12,11 @@ setuptools.setup(
     author="Michael Devin",
     author_email="michaelcdevin@outlook.com",
     url="https://github.com/michaelcdevin/fowt_force_gen",
-    packages=['fowt_force_gen.build', 'fowt_force_gen.tests'],
-    include_package_data=True,
+    packages=['fowt_force_gen', 'fowt_force_gen.tests'],
+    package_data={'fowt_force_gen': ['example_files/*', 'example_files/**/*',
+                                          'fast_input_files/*', 'fast_input_files/**/*',
+                                          'template_files/*', 'tuning_files/*', '.filepaths/*'],
+                  'fowt_force_gen.tests': ['test_data/*', 'test_fast/*', 'test_fast/**/*']},
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
