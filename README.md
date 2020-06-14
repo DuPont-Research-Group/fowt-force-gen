@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/256358750.svg)](https://zenodo.org/badge/latestdoi/256358750)
 # FOWT Force Gen
 The entirety of this package is designed to generate force demands and platform motions for a
 floating offshore wind turbine (FOWT) modeled in a particular location, then export these data to MAT files. These MAT
